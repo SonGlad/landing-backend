@@ -3,8 +3,13 @@ const { ctrlWrapper, HttpError } = require("../../helpers/index");
 
 
 const addNewContact =  async (req, res) => {
-    const {_id: owner} = req.user;
+    const {_id: owner, role} = req.user;
     const { ...contactData } = req.body;
+   
+
+    if (role === 'guest' || role === 'user') {
+      return res.status(403).send({ message: 'Forbidden: Access denied' });
+    }
 
     const existingContact = await Contact.findOne({ ...contactData });
 
