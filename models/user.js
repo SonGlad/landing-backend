@@ -21,12 +21,6 @@ const userSchema = new Schema ({
         type: String,
         minlength: 6,
         required: [true, "Set password for the user"],
-
-    },
-    subscription: {
-        type: String,
-        enum: ["starter", "pro", "business"],
-        default: "starter",
     },
     token: {
         type: String,
@@ -34,7 +28,7 @@ const userSchema = new Schema ({
     },
     avatarURL: {
         type: String,
-        required: true,
+        // required: true,
     },
     verify: {
         type: Boolean,
@@ -42,7 +36,13 @@ const userSchema = new Schema ({
     },
     verificationToken: {
         type: String,
-        required: [true, 'Verify token is required'],
+        required: false,
+        default: null,
+    },
+    role: {
+        type: String,
+        enum: ['guest', 'administrator', 'developer', 'user'],
+        default: 'guest'
     } 
 
 }, {versionKey:false, timestamps: true});
@@ -52,40 +52,69 @@ userSchema.post("save", handleMongooseError);
 
 
 const registerSchema = Joi.object({
-    username: Joi.string().required(),
-    email: Joi.string().pattern(emailRegexp).required(),
-    password: Joi.string().min(6).required()
+    username: Joi.string().min(2).max(30).required().messages({
+        "string.min": "Name must be at least 2 characters long.",
+        "string.max": "Name must be at most 30 characters long.",
+        "any.required": "Name is required.",
+    }),
+    email: Joi.string().pattern(emailRegexp).required().messages({
+        "string.pattern.base": "Invalid email address.",
+        "any.required": "Email is required.",
+    }),
+    password: Joi.string().min(8).required().messages({
+        "string.min": "Password must be at least 8 characters long.",
+        "any.required": "Password is required.",
+    }),
 });
 
 
 const loginSchema = Joi.object({
-    email: Joi.string().pattern(emailRegexp).required(),
-    password: Joi.string().min(6).required()
-});
-
-
-const updateSubscriptionSchema = Joi.object({
-    subscription: Joi.string().valid("starter", "pro", "business").required(),
+    email: Joi.string().pattern(emailRegexp).required().messages({
+        "string.pattern.base": "Invalid email address.",
+        "any.required": "Email is required.",
+    }),
+    password: Joi.string().min(8).required().messages({
+        "string.min": "Password must be at least 8 characters long.",
+        "any.required": "Password is required.",
+    }),
 });
 
 
 const verifySchema = Joi.object({
-    email: Joi.string().pattern(emailRegexp).required()
+    email: Joi.string().pattern(emailRegexp).required().messages({
+        "string.pattern.base": "Invalid email address.",
+        "any.required": "Email is required.",
+    }),
 });
 
 
 const userResetPasswordSchema = Joi.object({
-    email: Joi.string().pattern(emailRegexp).required(),
-    // newPassword: Joi.string().min(6).required(),
+    email: Joi.string().pattern(emailRegexp).required().messages({
+        "string.pattern.base": "Invalid email address.",
+        "any.required": "Email is required.",
+    }),
 });
+
+
+const validateUpdateInfoSchema = Joi.object({
+    password: Joi.string().min(8).required().messages({
+        "string.min": "Password must be at least 8 characters long.",
+        "any.required": "Password is required.",
+    }),
+    newPassword: Joi.string().min(8).required().messages({
+        "string.min": "Password must be at least 8 characters long.",
+        "any.required": "newPassword is required.",
+    }),
+});
+
 
 
 const schemas = { 
     registerSchema, 
     loginSchema, 
-    updateSubscriptionSchema, 
     verifySchema, 
-    userResetPasswordSchema
+    userResetPasswordSchema,
+    validateUpdateInfoSchema,
 };
 const User = model("users", userSchema);
 

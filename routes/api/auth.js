@@ -2,17 +2,17 @@ const express = require("express");
 
 
 const router = express.Router();
-const {validateBody, authenticate, upload} = require("../../middlewares/index");
+const {validateBody, authenticate, updateAvatarM} = require("../../middlewares/index");
 const  { schemas }  = require("../../models/user");
 const { register,
+    verifyEmail,
+    resendVerifyEmail,
     login,
     getCurrent,
     logout,
     updateAvatar,
-    verifyEmail,
-    resendVerifyEmail,
-    updateSubscription,
-    forgotPassword
+    updateInfo,
+    forgotPassword,
 } = require("../../controllers/auth/index")
 
 
@@ -26,15 +26,14 @@ router.post("/verify", validateBody(
 
 router.post("/login", validateBody(
     schemas.loginSchema), login.login);
-
-router.patch("/subscription", authenticate, validateBody(
-    schemas.updateSubscriptionSchema), updateSubscription.updateSubscription);
-
+    
 router.get("/current", authenticate, getCurrent.getCurrent);
 
 router.post("/logout", authenticate, logout.logout);
 
-router.patch("/avatars", authenticate, upload.single("avatar"), updateAvatar.updateAvatar);
+router.patch("/avatars", authenticate, updateAvatarM.single("avatarURL"), updateAvatar.updateAvatar);
+
+router.put("/update", authenticate, validateBody(schemas.validateUpdateInfoSchema), updateInfo.updateInfo);
 
 router.post("/forgotPassword", validateBody(schemas.userResetPasswordSchema), forgotPassword.forgotPassword);
 

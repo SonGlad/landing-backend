@@ -4,9 +4,14 @@ const {HttpError, ctrlWrapper} = require("../../helpers/index");
 
 const deleteById = async (req, res) => {
   const { contactId } = req.params;
-  const { _id: owner } = req.user;
-  const result = await Contact.findOneAndDelete({ _id: contactId, owner });;
-  // const result = await Contact.findByIdAndDelete(contactId);
+  const { role } = req.user;
+
+  if (role === 'guest' || role === 'user') {
+    return res.status(403).send({ message: 'Forbidden: Access denied' });
+  }
+
+  const result = await Contact.findOneAndDelete({ _id: contactId});
+  
 
   if (!result) {
     throw HttpError(404, "Contact was not found");

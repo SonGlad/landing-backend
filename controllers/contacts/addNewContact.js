@@ -1,10 +1,18 @@
 const { Contact } = require("../../models/contact");
-const { ctrlWrapper } = require("../../helpers/index");
+const { ctrlWrapper, HttpError } = require("../../helpers/index");
 
 
 const addNewContact =  async (req, res) => {
     const {_id: owner} = req.user;
-    const result = await Contact.create({...req.body, owner});
+    const { ...contactData } = req.body;
+
+    const existingContact = await Contact.findOne({ ...contactData });
+
+    if (existingContact) {
+        throw HttpError(400, "Contact already exists" );
+    }
+
+    const result = await Contact.create({ ...contactData, owner});
 
     res.status(201).send(result);
 };
@@ -13,3 +21,5 @@ const addNewContact =  async (req, res) => {
 module.exports = {
     addNewContact: ctrlWrapper(addNewContact)
 };
+
+

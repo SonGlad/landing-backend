@@ -3,30 +3,22 @@ const { ctrlWrapper } = require("../../helpers/index");
 
 
 const getAll = async (req, res) => {
-    const {_id: owner} = req.user;
-    const {favorite} = req.query;
+    const { role } = req.user;
 
-    const filter = { owner };
-
-    if (favorite !== undefined) {
-        if (favorite === "true") {
-            filter.favorite = true;
-        } else if (favorite === "false") {
-            filter.favorite = false;
-        }
+    if (role === 'guest' || role === 'user') {
+        return res.status(403).send({ message: 'Forbidden: Access denied' });
     }
 
-    const {page = 1, limit = 20} = req.query;
-    const skip = (page -1) * limit;
-    const result = await Contact.find(filter)
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (page - 1) * limit;
+
+    const result = await Contact.find()
         .skip(parseInt(skip))
         .limit(parseInt(limit))
-        .populate("owner", "username email");
-    // const result = await Contact.find({owner}, {skip, limit}).populate("owner", "username email");
-    
+        .populate("owner", "username email role");
+
     res.status(200).send(result);
 };
-
 
 module.exports = { 
     getAll: ctrlWrapper(getAll)
