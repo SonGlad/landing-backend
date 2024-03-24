@@ -3,7 +3,8 @@ const express = require('express');
 
 const router = express.Router();
 const {
-    getAll, 
+    getAll,
+    getAllByResource,
     getById, 
     addNewContact,
     externalContact, 
@@ -15,7 +16,9 @@ const {validateBody, isValidId, authenticate} = require("../../middlewares/index
 const  { schemas }  = require("../../models/contact");
 
 
-router.get('/', authenticate, getAll.getAll);
+router.get('/all', authenticate, getAll.getAll);
+
+router.get('/allbyresource', authenticate, getAllByResource.getAllByResource);
 
 router.get('/:contactId', authenticate, isValidId, getById.getById);
 
