@@ -23,10 +23,10 @@ router.get('/allbyresource', authenticate, getAllByResource.getAllByResource);
 router.get('/:contactId', authenticate, isValidId, getById.getById);
 
 router.post('/',authenticate, validateBody(
-    schemas.addSchema), addNewContact.addNewContact);
+    schemas.addAdminPanelContactSchema), addNewContact.addNewContact);
 
 router.post('/external',validateBody(
-    schemas.addSchema), externalContact.externalContact);
+    schemas.addExternalContactSchema), externalContact.externalContact);
 
 router.patch('/:contactId',authenticate, isValidId, validateBody(
     schemas.updateSchema), updateById.updateById);
