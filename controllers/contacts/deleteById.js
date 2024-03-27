@@ -17,7 +17,7 @@ const deleteById = async (req, res) => {
     throw HttpError(404, "Contact was not found");
   };
 
-  res.status(200).send({message: "contact deleted"});
+  res.status(200).send({_id: result._id, message: "Contact Deleted"});
 };
 
 
