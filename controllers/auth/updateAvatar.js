@@ -3,8 +3,12 @@ const { User } = require("../../models/user");
 
 
 const updateAvatar = async (req, res) => {
-    const { _id } = req.user;
+    const { _id, role } = req.user;
     const avatarURL = req.file.path;
+
+    if (role === 'guest') {
+      return res.status(403).send({ message: 'Forbidden: Access denied' });
+    }
   
     const updatedUser = await User.findOneAndUpdate(
       { _id },
@@ -16,6 +20,6 @@ const updateAvatar = async (req, res) => {
   };
 
 
-module.exports = {
+  module.exports = {
     updateAvatar: ctrlWrapper(updateAvatar)
 };

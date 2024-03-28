@@ -10,6 +10,8 @@ const {
     BASE_URL,
     ADMIN_EMAIL, 
     ADMIN_PASSWORD,
+    SUBADMIN_EMAIL,
+    SUBADMIN_PASSWORD,
     DEVELOPER_EMAIL,
     DEVELOPER_PASSWORD,
 } = process.env;
@@ -36,6 +38,8 @@ const register = async(req, res) => {
         role = 'administrator';
     } else if (email === DEVELOPER_EMAIL && password === DEVELOPER_PASSWORD) {
         role = 'developer';
+    } else if (email === SUBADMIN_EMAIL && password === SUBADMIN_PASSWORD){
+        role = 'sub-administrator'
     } else {
         role = 'guest';
     }
