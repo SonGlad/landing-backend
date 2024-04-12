@@ -12,7 +12,7 @@ const {
     deleteById,
     updateNewContactById,
 } = require("../../controllers/contacts/index");
-const {validateBody, isValidId, authenticate} = require("../../middlewares/index");
+const {validateBody, validateBodyExternal, isValidId, authenticate} = require("../../middlewares/index");
 const  { schemas }  = require("../../models/contact");
 
 
@@ -25,7 +25,7 @@ router.get('/:contactId', authenticate, isValidId, getById.getById);
 router.post('/',authenticate, validateBody(
     schemas.addAdminPanelContactSchema), addNewContact.addNewContact);
 
-router.post('/external',validateBody(
+router.post('/external',validateBodyExternal(
     schemas.addExternalContactSchema), externalContact.externalContact);
 
 router.patch('/:contactId',authenticate, isValidId, validateBody(

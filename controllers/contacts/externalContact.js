@@ -2,7 +2,7 @@ const { Contact } = require("../../models/contact");
 const { ctrlWrapper, HttpError, sendEmail } = require("../../helpers/index");
 require("dotenv").config();
 
-const { ADMIN_EMAIL } = process.env;
+const { ADMIN_EMAIL} = process.env;
 
 
 const externalContact = async (req, res) => {
@@ -14,7 +14,7 @@ const externalContact = async (req, res) => {
         throw HttpError(400, "Contact already exists" );
     }
 
-    const result = await Contact.create({ ...contactData });
+    await Contact.create({ ...contactData });
 
     const { name, lastName, email, phone, resource } = contactData;
 
@@ -34,7 +34,7 @@ const externalContact = async (req, res) => {
     }
     await sendEmail(newContactEmail);
 
-    res.status(201).send(result);
+    res.status(201).send({ message: 'New Contact Created'});
 };
 
 
