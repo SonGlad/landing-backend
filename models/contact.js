@@ -184,7 +184,7 @@ const updateNewContactSchema = Joi.object({
 });
 
 
-const Contact = model("db-contacts", contactSchema);
+const Contact = model("contacts", contactSchema);
 const schemas = { 
     addExternalContactSchema, 
     addAdminPanelContactSchema, 
